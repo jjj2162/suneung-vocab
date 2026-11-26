@@ -411,6 +411,7 @@ renderEarStats();renderIntervalRange();renderMelodySlots();renderIntervalButtons
 let deferredInstallPrompt=null;
 const installBtn=document.getElementById("installAppBtn");
 function standalone(){return window.matchMedia?.("(display-mode: standalone)").matches || window.navigator.standalone===true}
+function inAndroidWebView(){return /\bwv\b/i.test(navigator.userAgent||"")}
 if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}))}
 window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstallPrompt=e;if(installBtn&&!standalone())installBtn.classList.add("show")});
 window.addEventListener("appinstalled",()=>{deferredInstallPrompt=null;installBtn?.classList.remove("show")});
@@ -418,7 +419,7 @@ installBtn?.addEventListener("click",async()=>{
   if(deferredInstallPrompt){deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;installBtn.classList.remove("show");return}
   alert("이미 설치되어 있거나 설치 버튼을 지원하지 않는 브라우저야. 갤럭시에서는 브라우저 메뉴 → 홈 화면에 추가/앱 설치를 누르면 됨.");
 });
-if(installBtn&&!standalone()) installBtn.classList.add("show");
+if(installBtn&&!standalone()&&!inAndroidWebView()) installBtn.classList.add("show");
 
 </script>
 </body>
